@@ -1,6 +1,7 @@
 from rest_framework import renderers
 import json
 
+
 class UserRender(renderers.JSONRenderer):
     
     charset='utf-8'
@@ -15,4 +16,3 @@ class UserRender(renderers.JSONRenderer):
         
         return super().render(data,accepted_media_type,renderer_context)
             
-    
