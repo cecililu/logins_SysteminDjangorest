@@ -8,7 +8,7 @@ from django.contrib.auth.models import (
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, name,tc, password=None,password2=None):
+    def create_user(self,email,name,tc,password=None,password2=None):
         """
         Creates and saves a User with the given email, date of
         birth and password.
@@ -53,10 +53,11 @@ class MyUser(AbstractBaseUser):
     tc=models.BooleanField()
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    objects = UserManager()
     
     created_at=models.DateTimeField(auto_now=True)
     updated_at=models.DateTimeField(auto_now=True)
-    objects = UserManager()
+
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name','tc']
