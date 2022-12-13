@@ -62,8 +62,9 @@ class ChangeUserSerializer(serializers.Serializer):
         password2=attrs.get('password2')
         if password!=password2:
             raise serializers.ValidationError("wait pasword dont matchin first place")
+        
         user.set_password(password)
-        user.save
+        user.save()
         return (attrs)  
         
        
