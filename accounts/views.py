@@ -49,7 +49,7 @@ class UserProfileView(APIView):
           return Response (serializers.data,status=status.HTTP_200_OK)
     
       
-class UserChangePasswordview():
+class UserChangePasswordview(APIView):
     renderer_classes=[UserRender]
     permission_classes=[IsAuthenticated]
     def post(self,request,format=None):
