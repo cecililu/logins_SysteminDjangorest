@@ -46,4 +46,4 @@ class UserLoginView(APIView):
 class UserProfileView(APIView):
      renderer_classes=[UserRender]
      def get(self,request,format=None):
-          serializers=
+          serializers=UserProfileSerializer
