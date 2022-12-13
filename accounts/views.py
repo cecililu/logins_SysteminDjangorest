@@ -42,3 +42,8 @@ class UserLoginView(APIView):
                 token=get_tokens_for_user(user) 
                 return Response({"msg":'succesfull loged in','token':token})
         return Response({ "errors":'Email or password invalid'},status=status.HTTP_200_OK)
+    
+class UserProfileView(APIView):
+     renderer_classes=[UserRender]
+     def get(self,request,format=None):
+          serializers=
