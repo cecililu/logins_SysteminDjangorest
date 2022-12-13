@@ -41,20 +41,33 @@ class UserLoginView(APIView):
         return Response({ "errors":'Email or password invalid'},status=status.HTTP_200_OK)
     
     
+        
 class UserProfileView(APIView):
      renderer_classes=[UserRender]
      permission_classes=[IsAuthenticated]
      def get(self,request,format=None):
           serializers=UserProfileSerializer(request.user)
           return Response (serializers.data,status=status.HTTP_200_OK)
-    
-      
+  
+  
 class UserChangePasswordview(APIView):
     renderer_classes=[UserRender]
     permission_classes=[IsAuthenticated]
-    
+        
     def post(self,request,format=None):
         serializers=ChangeUserSerializer(data=request.data,context={'user':request.user})
         if serializers.is_valid(raise_exception=True):
             return Response({"msg":'password changed succesfull'})
         return Response(serializers.errors)
+
+
+class SendPasswordResetView(APIView):
+    renderer_classes=[UserRender]    
+    
+    def post(self,request,format=None):
+        serializers=SendPasswordResetViewSerializer(data=request.data)
+        if serializers.is_valid(raise_exception=True):
+            return Response({"msg":'email sent'})
+        
+       
+    
