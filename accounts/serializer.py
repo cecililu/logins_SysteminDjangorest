@@ -71,22 +71,26 @@ class ChangeUserSerializer(serializers.Serializer):
         user.set_password(password)
         user.save()
         return (attrs)  
-        
+import os
+from accounts.utils import Util
+
 class SendPasswordResetViewSerializer(serializers.Serializer):
     
     email=serializers.EmailField(max_length=255)   
     class Meta:
         fields=['email']
         
-    def validate_(self, attrs):
+    def validate(self, attrs):
         email=attrs.get('email')
         if MyUser.objects.filter(email=email).exists():
-            user=MyUser.objects.filter(email=email)
+            user=MyUser.objects.get(email=email)
+            
             uid=urlsafe_base64_encode(force_bytes(user.id))
             token=PasswordResetTokenGenerator().make_token(user)
             link='http://localhost:3000/api/user/reset/'+uid+'/'+token
-            #send email
             
+            data={'subject':'Password Reset Link',"body":link,"to_email":email}
+            Util.send_email(data)
             return attrs
         else:
             raise serializers.ValidationError("That email is not a registered user")
