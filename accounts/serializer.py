@@ -73,21 +73,47 @@ class ChangeUserSerializer(serializers.Serializer):
         return (attrs)  
         
 class SendPasswordResetViewSerializer(serializers.Serializer):
+    
     email=serializers.EmailField(max_length=255)   
     class Meta:
         fields=['email']
+        
     def validate_(self, attrs):
         email=attrs.get('email')
-        
         if MyUser.objects.filter(email=email).exists():
             user=MyUser.objects.filter(email=email)
             uid=urlsafe_base64_encode(force_bytes(user.id))
             token=PasswordResetTokenGenerator().make_token(user)
             link='http://localhost:3000/api/user/reset/'+uid+'/'+token
-            return attrs
+            #send email
             
+            return attrs
         else:
             raise serializers.ValidationError("That email is not a registered user")
         return attrs
         
+class ChangePasswordViewEmailSerializer(serializers.Serializer):
+    password=serializers.CharField(max_length=100,style={
+        'input_type':'password',
+        'write_only':True 
+                  })
     
+    password2=serializers.CharField(style={
+        'input_type':'password',
+        'write_only':True 
+                  })
+    
+    class Meta:
+        fields=['password','password2']
+    
+    def validate(self, attrs): 
+        uid=self.context.get('uid')
+        token=self.context.get('token')
+        password=attrs.get('password')
+        password2=attrs.get('password2')
+        if password!=password2:
+            raise serializers.ValidationError("wait pasword dont matchin first place")
+        
+        user.set_password(password)
+        user.save()
+        return (attrs)  

@@ -5,6 +5,7 @@ urlpatterns = [
     path('register',UserRegistationView.as_view()),
     path('login',UserLoginView.as_view()),
     path('user',UserProfileView.as_view()),
-    path('forgotpassword',UserChangePasswordview.as_view()),
-    path('sendresetemail',SendPasswordResetView.as_view())
+    path('changepassword',UserChangePasswordview.as_view()),
+    path('sendresetemail',SendPasswordResetView.as_view()),
+    path('reset/<uid>/<token>',ChangePasswordViewEmail.as_view())
 ]
