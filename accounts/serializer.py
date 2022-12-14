@@ -107,13 +107,27 @@ class ChangePasswordViewEmailSerializer(serializers.Serializer):
         fields=['password','password2']
     
     def validate(self, attrs): 
-        uid=self.context.get('uid')
-        token=self.context.get('token')
-        password=attrs.get('password')
-        password2=attrs.get('password2')
-        if password!=password2:
-            raise serializers.ValidationError("wait pasword dont matchin first place")
+        try:
+            uid=self.context.get('uid')
+            token=self.context.get('token')
+            
+            password=attrs.get('password')
+            password2=attrs.get('password2')
+            
+            if password!=password2:
+                raise serializers.ValidationError("wait pasword dont matchin first place")
+            
+            id=smart_str(urlsafe_base64_decode(uid))
+            user=MyUser.objects.get(id=id)
+            
+            if not PasswordResetTokenGenerator().check_token(user,token):
+                raise serializers.ValidationError("Not the right token")
+            user.set_password(password)
+            user.save()
+            return (attrs)  
         
-        user.set_password(password)
-        user.save()
-        return (attrs)  
+        except DjangoUnicodeDecodeError as idenifier:
+            PasswordResetTokenGenerator().check_token(user,token)
+            raise serializers.ValidationError("Invalid token")
+            
+            
